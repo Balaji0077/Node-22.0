@@ -17,7 +17,7 @@ ENV NODE_PATH=/usr/local/lib/node_modules
 ENV PATH="/usr/local/bin:$PATH"
 
 # renovate: datasource=node-version depName=node
-ARG NODE_VERSION=22.22.0
+ARG NODE_VERSION=24.13.0
 # renovate: datasource=npm depName=npm
 ARG NPM_VERSION=11.6.4
 # renovate: datasource=npm depName=tar
