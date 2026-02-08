@@ -1,0 +1,44 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "docker:pinDigests"
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["digest", "major", "minor", "patch"],
+      "groupName": "docker"
+    },
+    {
+      "matchDepNames": ["node"],
+      "versioning": "node"
+    },
+    {
+      "matchDepNames": ["node", "npm", "tar", "diff"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "groupName": "nodejs22-build-deps"
+    },
+    {
+      "matchDepNames": ["node", "npm", "tar", "diff"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": false
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update ARG version variables in Nodejs22 Dockerfile",
+      "managerFilePatterns": ["^NodeJs/nodejs22/Dockerfile$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z0-9-]+) depName=(?<depName>[a-z]+)\\s*\\nARG \\w+=(?<currentValue>[\\d.]+)"
+      ],
+      "datasourceTemplate": "{{{datasource}}}",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    }
+  ],
+  "enabledManagers": ["dockerfile", "custom.regex"]
+}
