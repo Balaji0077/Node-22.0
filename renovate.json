@@ -2,43 +2,33 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "docker:pinDigests"
+    "docker:pinDigests",
+    "docker:enableMajor"
   ],
   "vulnerabilityAlerts": {
     "enabled": true
   },
-  "packageRules": [
-    {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["digest", "major", "minor", "patch"],
-      "groupName": "docker"
-    },
-    {
-      "matchDepNames": ["node"],
-      "versioning": "node"
-    },
-    {
-      "matchDepNames": ["node", "npm", "tar", "diff"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "groupName": "nodejs22-build-deps"
-    },
-    {
-      "matchDepNames": ["node", "npm", "tar", "diff"],
-      "matchUpdateTypes": ["patch"],
-      "automerge": false
-    }
-  ],
+  "osvVulnerabilityAlerts": true,
+  "docker": {
+    "pinDigests": true
+  },
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update ARG version variables in Nodejs22 Dockerfile",
-      "managerFilePatterns": ["Node-22.0/Dockerfile$"],
+      "description": "ENV/ARG versions with renovate comment (any datasource); RUN must use ${VAR} to get new version",
+      "fileMatch": [".*([Dd]ockerfile|[Cc]ontainerfile)(\\..*)?$"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-z0-9-]+) depName=(?<depName>[a-z]+)\\s*\\nARG \\w+=(?<currentValue>[\\d.]+)"
+        "# renovate: datasource=(?<datasource>[^\\s]+) depName=(?<depName>[^\\s]+)(?: versioning=(?<versioning>[^\\s]+))?\\n\\s*(?:ENV|ARG) .*?=(?<currentValue>[^\\s\\n]+)"
       ],
-      "datasourceTemplate": "{{{datasource}}}",
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ],
-  "enabledManagers": ["dockerfile", "custom.regex"]
+  "packageRules": [
+    {
+      "description": "Patch/minor Docker image updates (security fixes)",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["patch", "minor", "digest"],
+      "automerge": false
+    }
+  ]
 }
