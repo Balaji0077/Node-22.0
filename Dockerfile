@@ -14,7 +14,7 @@ LABEL com.phenom.sub.base.image="716533421362.dkr.ecr.us-east-1.amazonaws.com/ph
 
 ARG APP_HOME=/go
 # renovate: datasource=golang-version depName=golang
-ARG GOLANG_VERSION=1.25.7
+ARG GOLANG_VERSION=1.25.6
 
 ENV GOLANG_VERSION=${GOLANG_VERSION}
 ENV GOTOOLCHAIN="local"
